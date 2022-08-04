@@ -1,5 +1,5 @@
 {
-  "name": "reputationMonitor",
+  "name": "reputation-monitor-dev",
   "version": "1.0.0",
   "description": "A utility to be used in aiding local development",
   "main": "index.js",
@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ethers": "^5.6.9",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.6"
   }
