@@ -2,7 +2,7 @@ const ethers = require('ethers'); // eslint-disable-line @typescript-eslint/no-v
 
 const colonyNetworkAddress = process.argv[2];
 
-const provider = new ethers.providers.JsonRpcProvider("http://network-contracts.docker:8545");
+const provider = new ethers.providers.JsonRpcProvider("http://network-contracts:8545");
 
 // eslint-disable-next-line max-len
 const networkAbi = require('../colonyNetwork/build/contracts/IColonyNetwork.json')
@@ -82,7 +82,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/reputation/local', createProxyMiddleware({ target: "http://network-contracts.docker:3002", changeOrigin: true, pathRewrite: {'^/reputation/local' : ''}}));
+app.use('/reputation/local', createProxyMiddleware({ target: "http://network-contracts:3002", changeOrigin: true, pathRewrite: {'^/reputation/local' : ''}}));
 app.get('/reputation/monitor/toggle', function (req, res) {
   reputationMonitorActive = !reputationMonitorActive;
   res.send(`Reputation monitor auto mining is now ${reputationMonitorActive ? "on" : "off" }`)
