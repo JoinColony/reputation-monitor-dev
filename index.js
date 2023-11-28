@@ -19,10 +19,24 @@ const colonyNetwork = new ethers.Contract(
 
 let lastBlockThisServiceMined = null;
 let reputationMonitorActive = false;
+let autominerId;
 
 async function forwardTime(seconds) {
   await provider.send('evm_increaseTime', [seconds]);
-  await provider.send('evm_mine');
+  if (!autominerId) {
+    await provider.send('evm_mine');
+  }
+}
+
+async function automine(seconds = 0) {
+  if (autominerId){
+    autominerId = clearInterval(autominerId);
+  }
+  if (seconds === 0) {
+    return;
+  } else {
+    autominerId = setInterval(() => provider.send('evm_mine'), seconds * 1000);
+  }
 }
 
 async function doBlockChecks(blockNumber) {
@@ -90,4 +104,19 @@ app.get('/reputation/monitor/toggle', function (req, res) {
 app.get('/reputation/monitor/status', function (req, res) {
   res.send(`{state: ${reputationMonitorActive}}`);
 });
+app.get('/automine/status', async function (req, res) {
+  res.status(200).send('Autominer ' + (autominerId ? 'is started' : `is stopped`));
+});
+app.get('/automine/:seconds', async function (req, res){
+  let seconds = req.param.seconds || 0;
+  try {
+    seconds = parseInt(req.params.seconds, 10);
+  } catch (err) {
+    return res.status(400).send("Seconds must be a parseable integer");
+  }
+  await automine(seconds);
+  res.status(200).send('Autominer ' + seconds === 0 ? 'stopped' : `started with ${seconds} seconds period`);
+});
+
 app.listen(3001);
+automine(5);
