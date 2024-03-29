@@ -5,10 +5,10 @@ const colonyNetworkAddress = process.argv[2];
 const provider = new ethers.providers.JsonRpcProvider("http://network-contracts:8545");
 
 // eslint-disable-next-line max-len
-const networkAbi = require('../colonyNetwork/build/contracts/IColonyNetwork.json')
+const networkAbi = require('../colonyNetwork/artifacts/contracts/colonyNetwork/IColonyNetwork.sol/IColonyNetwork.json')
   .abi;
 // eslint-disable-next-line max-len
-const cycleAbi = require('../colonyNetwork/build/contracts/IReputationMiningCycle.json')
+const cycleAbi = require('../colonyNetwork/artifacts/contracts/reputationMiningCycle/IReputationMiningCycle.sol/IReputationMiningCycle.json')
   .abi;
 
 const colonyNetwork = new ethers.Contract(
