@@ -2,7 +2,7 @@ const ethers = require('ethers'); // eslint-disable-line @typescript-eslint/no-v
 
 const colonyNetworkAddress = process.argv[2];
 
-const provider = new ethers.providers.JsonRpcProvider("http://network-contracts:8545");
+const provider = new ethers.providers.StaticJsonRpcProvider("http://network-contracts:8545");
 
 // eslint-disable-next-line max-len
 const networkAbi = require('../colonyNetwork/artifacts/contracts/colonyNetwork/IColonyNetwork.sol/IColonyNetwork.json')
