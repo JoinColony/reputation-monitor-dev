@@ -2,7 +2,7 @@ const ethers = require('ethers'); // eslint-disable-line @typescript-eslint/no-v
 
 const colonyNetworkAddress = process.argv[2];
 
-const provider = new ethers.providers.JsonRpcProvider("http://network-contracts:8545");
+const provider = new ethers.providers.StaticJsonRpcProvider('http://network-contracts:8545');
 
 // eslint-disable-next-line max-len
 const networkAbi = require('../colonyNetwork/artifacts/contracts/colonyNetwork/IColonyNetwork.sol/IColonyNetwork.json')
@@ -21,10 +21,22 @@ let lastBlockThisServiceMined = null;
 let reputationMonitorActive = false;
 let autominerId;
 
+async function mine(retryTimes = 3) {
+  try {
+    await provider.send('evm_mine');
+  } catch (err) {
+    console.error('Mine failed', err);
+    if (retryTimes) {
+      console.info('Retrying...');
+      await mine(retryTimes - 1);
+    }
+  }
+}
+
 async function forwardTime(seconds) {
   await provider.send('evm_increaseTime', [seconds]);
   if (!autominerId) {
-    await provider.send('evm_mine');
+    await mine();
   }
 }
 
@@ -35,7 +47,7 @@ async function automine(seconds = 0) {
   if (seconds === 0) {
     return;
   } else {
-    autominerId = setInterval(() => provider.send('evm_mine'), seconds * 1000);
+    autominerId = setInterval(mine, seconds * 1000);
   }
 }
 
